@@ -1,5 +1,6 @@
 import 'package:cloth/data/api.dart';
 import 'package:cloth/data/weather.dart';
+import 'package:cloth/location.dart';
 import 'package:cloth/util.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  LocationData location =
+      LocationData(lat: 37.498122, lng: 127.027565, name: "강남구", x: 0, y: 0);
   List<String> clothes = [
     "assets/img/shirts.png",
     "assets/img/jumper.png",
@@ -68,9 +71,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void getWeather() async {
     final api = WeatherApi();
-    weather = await api.getWeather(1, 1, 20220521, "2000");
 
     final now = DateTime.now();
+
+    Map<String, int> xy = Utils.latLngToXY(location.lat, location.lng);
+
+    int time2 = int.parse("${now.hour}10");
+
+    String _time = "";
+
+    if (time2 > 2300) {
+      _time = "2300";
+    } else if (time2 > 1700) {
+      _time = "2000";
+    } else if (time2 > 1400) {
+      _time = "1400";
+    } else if (time2 > 1100) {
+      _time = "1100";
+    } else if (time2 > 800) {
+      _time = "0800";
+    } else if (time2 > 500) {
+      _time = "0500";
+    } else {
+      _time = "0200";
+    }
+    weather = await api.getWeather(
+        xy["nx"], xy["ny"], Utils.getFormatTime(DateTime.now()), _time);
+
     int time = int.parse("${now.hour}00");
     weather.removeWhere((w) => w.time < time); //현재 시 보다 작은 시간들은 삭제
 
@@ -111,10 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     height: 50,
                   ),
-                  const Text(
-                    "구로구",
+                  Text(
+                    "$location.name",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 20),
@@ -203,12 +230,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text("${w.tmp}°C",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 10,
                                         )),
                                     Text("${w.pop}%",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 10,
                                         )),
@@ -218,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Image.asset(sky[_level]),
                                     ),
                                     Text("${w.time}",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.white, fontSize: 10)),
                                   ],
                                 ));
@@ -234,9 +261,17 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          LocationData data = await Navigator.of(context)
+              .push(MaterialPageRoute(builder: (ctx) => LocationPage()));
+
+          if (data != null) {
+            location = data;
+            getWeather();
+          }
+        },
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.location_on),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
