@@ -69,6 +69,7 @@ class _ClothPageState extends State<ClothPage> {
                       builder: (ctx) {
                         return AlertDialog(
                           content: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: List.generate(sets.length, (_idx) {
                               return InkWell(
                                   child: Container(
@@ -91,6 +92,7 @@ class _ClothPageState extends State<ClothPage> {
                                     clothes[idx].cloth = sets[_idx];
                                     final pref = Preference();
                                     pref.setTmp(clothes[idx]);
+                                    Navigator.of(context).pop();
                                     setState(() {});
                                   });
                             }),

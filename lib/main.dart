@@ -1,5 +1,6 @@
 import 'package:cloth/cloth.dart';
 import 'package:cloth/data/api.dart';
+import 'package:cloth/data/preference.dart';
 import 'package:cloth/data/weather.dart';
 import 'package:cloth/location.dart';
 import 'package:cloth/util.dart';
@@ -43,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   List<Weather> weather = [];
+  List<ClothTmp> tmpCloth = [];
 
   List<String> sky = [
     "assets/img/sky1.png",
@@ -77,6 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Map<String, int> xy = Utils.latLngToXY(location.lat, location.lng);
 
+    final pref = Preference();
+    tmpCloth = await pref.getTmp();
+
     int time2 = int.parse("${now.hour}10");
 
     String _time = "";
@@ -105,6 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
     current = weather.first;
 
     level = getLevel(current);
+
+    clothes = tmpCloth.firstWhere((t) => t.tmp < current.tmp).cloth;
 
     setState(() {});
   }
@@ -137,6 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (ctx) => ClothPage()));
+              getWeather();
             })
       ]),
       body: weather.isEmpty
