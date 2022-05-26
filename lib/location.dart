@@ -15,6 +15,8 @@ class _LocationPageState extends State<LocationPage> {
     LocationData(lat: 37.498122, lng: 127.027565, name: "마포구", x: 0, y: 0),
     LocationData(lat: 37.560502, lng: 127.907612, name: "성동구", x: 0, y: 0),
     LocationData(lat: 37.552288, lng: 127.145225, name: "강동구", x: 0, y: 0),
+    LocationData(lat: 37.5941904, lng: 126.99552, name: "우리집", x: 0, y: 0),
+    LocationData(lat: 37.5896453, lng: 127.0392909, name: "어머니집", x: 0, y: 0),
   ];
   @override
   Widget build(BuildContext context) {

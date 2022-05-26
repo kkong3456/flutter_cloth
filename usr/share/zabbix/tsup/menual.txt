@@ -1,0 +1,155 @@
+�� �̺�Ʈ ��ȸ
+�� CSCF���� Deregi ������ ���� ��ȸ
+  select psaid||' '||state||' '||s_cscf||' '||regi_sender||' '||regtime||' '||accessnetwork from lte_register_info where regi_sender=1 and expire_time<to_char(sysdate-(20/24/60),'yyyymmddhhmiss') order by regtime desc limit 100;
+
+�� ��ü��ȸ(�հ�)
+
+�� �����ڼ� ��ü��ȸ
+  select count(*) from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss');
+  
+�� TTA , legacy ���� ��ü ��ȸ
+  select count(*)||' '||ttype from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by ttype;
+  
+�� �ܸ� regi����ð� ��ü��ȸ
+  select count(*)||' '||expire from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by expire;
+  
+�� CSCF�� ���� �Ǽ� ��ü��ȸ
+  select count(*)||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by s_cscf;
+  
+�� Regi ������ �Ǽ� ��ü ��ȸ( VoLTE+PSVT :6, VoLTE Only : 7, PSVT : 9 ��)
+  select count(*)||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by volte_flag;
+  
+�� TTA Ÿ�Ժ� �Ǽ� ��ü��ȸ
+  select count(*)||' '||ttype from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by ttype;
+  
+�� �ܸ� �𵨸� �� ��ü ��ȸ
+  select count(*)||' '||modelcode from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by modelcode order by modelcode;
+  
+�� �𵨸�,sw���� �� ��ü ��ȸ
+  select count(*)||' '||modelcode||' '||sw_version from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by modelcode,sw_version order by modelcode,sw_version;
+
+�� �ܸ� PLMN �� ��ü ��ȸ
+  select count(*)||' '||plmn from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by plmn;
+  
+�� �ܸ� usim�̵��� ��ü��ȸ(TTA :1, legacy :0)
+  select count(*)||' '||usim_type from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by usim_type;
+  
+�� IPSec �ܸ� ��ü ��ȸ (���� : 1, ������ :0)
+  select count(*)||' '||ipsec_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by ipsec_flag;
+  
+�� SMS Over IP ���� �ܸ� ��ü ��ȸ(���� : 1, ������ :0)
+  select count(*)||' '||smsip_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by smsip_flag;
+  
+�� IPv6 �ܸ� ��ü��ȸ (���� : 1, ������ 0)
+  select count(*)||' '||ipsec_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by ipsec_flag;
+  
+�� EPS/Combined Ÿ�� �ܸ� ��ü ��ȸ(û�డ���� ����, 0 :Combined, 1: EPS Only)
+  select count(*)||' '||attatch_type from lte_user_profile group by attatch_type;
+  
+�� ���Ұ����� ��ü��ȸ (Null : �ĺҰ�����, TES : ���, MSP : �ٴܰ� ���� ����)
+  select count(*)||' '||prepaid from lte_user_profile group by prepaid;
+  
+�� �ܸ������ ��ü��ȸ (1: kt, 2 : skt, 3 : lgu, 0: ������/�ڱ���)
+   select count(*)||' '||operator from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') group by operator;
+
+�� 5G ��� �ܸ�/LTE USIM/5G CSCF ��ȸ(��ü ��ȸ)
+    select s_cscf||' '||count(*) from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('SM-A908N','SM-F907N','SM-G977N','SM-N971N','SM-N976N','LM-V500N') and prid not like '450080%' and s_cscf like '%scscf51.octave.com' group by s_cscf;
+
+�� 5G ���� �ܸ� ��ü ��ȸ(�����Ƚ�����)
+   select count(*)||' '||modelcode||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and psaid like '%P_01034862%' group by modelcode,s_cscf;
+
+�� 5G ���� �ܸ� ��ü��ȸ(grv5g-scscf1-test.octave.com, ��ȯ�����)
+   select count(*)||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and s_cscf like '%grv5g%' group by s_cscf;
+
+�� ��ü��ȸ(������ ����)
+
+�� ������ ����/PRID ��ȸ (10�� ����)
+  select psaid||' '||prid from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+  
+�� �ܸ� contact(IP)/visitednetwork ��ȸ
+  select psaid||' '||contact||' '||visitednetwork from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+  
+�� �ܸ� accessnetwork/regi �ð� ��ȸ
+  select psaid||' '||accessnetwork||' '||regtime from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+  
+�� �ܸ� regi����ð�, ���� CSCF ���� ��ȸ
+  select psaid||' '||expire||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+  
+�� �ܸ� user_agent,TTA Ÿ�� ���� ��ȸ
+  select psaid||' '||user_agent||' '||ttype from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+  
+�� �ܸ� �𵨸� ,SW����,����̽� Ÿ�� ���� ��ȸ
+  select psaid||' '||modelcode||' '||sw_version||' '||devicetype from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+
+�� �ܸ� USIM �̵��� ����(usim�̵��� : 1, legacy : 0) �� VoLTE ���� ����(VoLTE+PSVT : 6, VoLTE Only : 7, PSVT : 8, ������: 9, NOT_REGI :2)
+  select psaid||' '||usim_type||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+
+�� �ܸ� IPSec, SMS Over IP, IPv6 �������� ��ȸ(1: ����, 0: ������)
+  select psaid||' '||ipsec_flag||' '||smsip_flag||' '||ipv6_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+
+�� �ܸ� EPS/Combined Ÿ��(0 :Combined, 1: EPS Only) �� ���Ұ�����(Null : �ĺҰ�����, TES : ��Ⱑ����) ���� ��ȸ
+  select psaid||' '||prepaid||' '||attatch_type from lte_user_profile limit 10;
+
+�� Regi ������ ������ ��ȸ (VoLTE+PSVT : 6, VoLTE Only : 7, PSVT : 8, ������: 9, NOT_REGI :2)
+  select psaid||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and volte_flag=6;
+  
+�� �ܸ������ ���� ��ü��ȸ
+   select psaid||' '||operator from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') limit 10;
+   
+�� Ư���ܸ� �ڱ����� ���� ��ȸ (1: kt, 2 : skt, 3 : lgu, 0: ������/�ڱ���) 
+    select psaid||' '||operator||' '||modelcode from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and operator=0 and modelcode='SM-G160N';
+ 
+�� Network Deregi �� ���� ��ȸ(regi_sender 0:�ܸ�, 1:CSCF, state 0: terminate,1 : active)
+    select psaid||' '||modelcode||' '||regi_sender from lte_register_info where regi_sender=1 and state=0 order by expire_time desc limit 10;
+
+�� 5G ���� �ܸ� ���� ���� ��ȸ(�����Ƚ� ����)
+    select psaid||' '||modelcode||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and psaid like '%P_01034862%' limit 10;
+
+�� 5G ���� �ܸ� ���� ���� ��ȸ(��ȯ�� ����)
+    select psaid||' '||modelcode||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and s_cscf like '%grv5g%' limit 10;
+ 
+�� 5G ��� �ܸ� ���� ��ȸ(���� ��ȸ)
+    select psaid||' '||prid||' '||modelcode||' '||s_cscf||' '||regtime||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('SM-A908N','SM-F907N','SM-G977N','SM-N971N','SM-N976N','LM-V500N') order by regtime desc;
+
+�� 5G ��� �ܸ�/LTE USIM ��ȸ(���� ��ȸ)
+    select psaid||' '||prid||' '||modelcode||' '||s_cscf||' '||regtime||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('SM-A908N','SM-F907N','SM-G977N','SM-N971N','SM-N976N','LM-V500N') and prid not like '450080%' order by regtime desc;     
+
+�� 5G ��� �ܸ�/LTE USIM/5G CSCF ��ȸ(���� ��ȸ)
+    select psaid||' '||prid||' '||modelcode||' '||s_cscf||' '||regtime||' '||volte_flag from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('SM-A908N','SM-F907N','SM-G977N','SM-N971N','SM-N976N','LM-V500N') and prid not like '450080%' and s_cscf like '%scscf51.octave.com' order by regtime desc;     
+
+�� ��ȭCSCF#4, ������ ���� ��ȸ
+    select psaid||' '||s_cscf||' '||regtime from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode like '%iOS%' and s_cscf like '%hhm-scscf4%' order by expire_time desc;
+
+�� ��ȭCSCF#4,  �ܸ��𵨸� �� ���� ��ȸ
+    select psaid||' '||modelcode||' '||regtime from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and s_cscf like '%hhm-scscf4%' order by expire_time desc;    
+
+�� ���� �ڹ�ȣ�� ���ȣ ã�� ��ȸ
+    select psaid from lte_uri_list where uri_kind=3 and uri='01028634152';
+    
+�� ���� ���ȣ�� �ڹ�ȣ ã�� ��ȸ
+    select uri from lte_uri_list where uri_kind=3 and psaid='P_01065336531';
+    
+�� ����(Ư��) ��ȸ
+
+�� Ư�� �ܸ��� �հ�
+  select count(*)||' '||modelcode from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode='LGM-X600K' group by modelcode;
+
+�� Ư�� �ܸ��� sw������ �հ�
+  select count(*)||' '||modelcode||' '||sw_version from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode='LGM-X600K' group by modelcode,sw_version order by count(*) desc;
+
+�� Ư�� CSCF ���� ������ �հ�(��ȭCSCF1 : %hhm-scscf1%, ����CSCF1 : %grm-scscf1% )
+  select count(*)||' '||s_cscf from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and s_cscf like '%hhm-scscf1%' group by s_cscf;
+
+�� Ư�� PLMN�� ������ ��ü ��ȸ(�Ϻ� Docomo : 44010, �̱� AT&T : 310410, �� : 310470) 
+  select psaid||' '||plmn from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and plmn='44010'; 
+  
+  
+�� Connected Car ���� ������ ��ȸ
+�� ����/cscf/�𵨸����� ��ȸ
+   select psaid||' '||s_cscf||' '||modelcode from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('TM13LNKRHK4','TM13LNKRHK2','TM03LNKRHK0','LTD-KK4100','LTD-KK4000','KTD-KK3000','LTD-KK1000','LTD-KK2000');
+
+�� �𵨺� ��
+   select count(*)||' '||modelcode from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('TM13LNKRHK4','TM13LNKRHK2','TM03LNKRHK0','LTD-KK4100','LTD-KK4000','KTD-KK3000','LTD-KK1000','LTD-KK2000') group by modelcode;
+
+�� �ܼ��Ǽ�
+   select count(*) from lte_register_info where expire_time>=to_char(sysdate,'yyyymmddhhmiss') and modelcode in ('TM13LNKRHK4','TM13LNKRHK2','TM03LNKRHK0','LTD-KK4100','LTD-KK4000','KTD-KK3000','LTD-KK1000','LTD-KK2000');

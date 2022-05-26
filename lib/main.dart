@@ -1,3 +1,4 @@
+import 'package:cloth/cloth.dart';
 import 'package:cloth/data/api.dart';
 import 'package:cloth/data/weather.dart';
 import 'package:cloth/location.dart';
@@ -34,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   LocationData location =
-      LocationData(lat: 37.498122, lng: 127.027565, name: "강남구", x: 0, y: 0);
+      LocationData(lat: 37.5941904, lng: 126.99552, name: "우리집", x: 0, y: 0);
   List<String> clothes = [
     "assets/img/shirts.png",
     "assets/img/jumper.png",
@@ -129,6 +130,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: color[level],
+      appBar:
+          AppBar(backgroundColor: Colors.transparent, elevation: 0, actions: [
+        IconButton(
+            icon: Icon(Icons.category),
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (ctx) => ClothPage()));
+            })
+      ]),
       body: weather.isEmpty
           ? Container(child: Text("날씨정보를 불러오고있어요"))
           : Container(
@@ -139,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 50,
                   ),
                   Text(
-                    "$location.name",
+                    "${location.name}",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         color: Colors.white,
@@ -267,6 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           if (data != null) {
             location = data;
+            print(location);
             getWeather();
           }
         },
